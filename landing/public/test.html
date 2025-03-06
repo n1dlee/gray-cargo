@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Auth Test</title>
+</head>
+<body>
+    <h1>LinkedIn Authentication Test</h1>
+    <div id="authStatus">Checking authentication status...</div>
+    <button id="loginBtn" style="display: none;" onclick="window.location.href='/auth/linkedin'">Login with LinkedIn</button>
+    <button id="getPostsBtn" style="display: none;">Get Posts</button>
+    <div id="posts"></div>
+
+    <script>
+        // Check authentication status
+        fetch('/api/auth/status')
+            .then(res => res.json())
+            .then(data => {
+                const authStatus = document.getElementById('authStatus');
+                const loginBtn = document.getElementById('loginBtn');
+                const getPostsBtn = document.getElementById('getPostsBtn');
+
+                if (data.isAuthenticated) {
+                    authStatus.textContent = 'Authenticated as ' + data.user.displayName;
+                    getPostsBtn.style.display = 'block';
+                } else {
+                    authStatus.textContent = 'Not authenticated';
+                    loginBtn.style.display = 'block';
+                }
+            });
+
+        // Get posts
+        document.getElementById('getPostsBtn').addEventListener('click', () => {
+            fetch('/api/linkedin-posts')
+                .then(res => res.json())
+                .then(posts => {
+                    const postsDiv = document.getElementById('posts');
+                    postsDiv.innerHTML = posts.map(post => `
+                        <div style="margin: 10px 0; padding: 10px; border: 1px solid #ccc;">
+                            <p>${post.text}</p>
+                            <a href="${post.postUrl}" target="_blank">View on LinkedIn</a>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('posts').innerHTML = 'Error fetching posts';
+                });
+        });
+    </script>
+</body>
+</html> 
