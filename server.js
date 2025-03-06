@@ -10,8 +10,7 @@ require('./auth');
 dotenv.config();
 
 const app = express();
-const host = "192.168.0.101"
-const port = 8043;
+const port = 80;
 
 // Session middleware
 app.use(session({
@@ -64,6 +63,6 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(port, host, () => {
-    console.log(`Server running on http://${host}:${port}`);
+app.listen(port, () => {
+    console.log(`Server running on PORT ${port}`);
 });
