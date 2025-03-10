@@ -10,7 +10,7 @@ require('./auth');
 dotenv.config();
 
 const app = express();
-const port = 80;
+const port = 3000;
 
 // Session middleware
 app.use(session({
